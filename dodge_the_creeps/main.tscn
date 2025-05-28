@@ -1,7 +1,5 @@
-[gd_scene load_steps=8 format=3 uid="uid://cyfwty2q3rdse"]
+[gd_scene load_steps=6 format=3 uid="uid://cyfwty2q3rdse"]
 
-[ext_resource type="Script" uid="uid://bi0dtjbbi0wxj" path="res://main.gd" id="1_0r6n5"]
-[ext_resource type="PackedScene" uid="uid://rkdnhqgf2hpj" path="res://mob.tscn" id="2_50pww"]
 [ext_resource type="PackedScene" uid="uid://4vwrqjegqwpj" path="res://player.tscn" id="3_veqnc"]
 [ext_resource type="PackedScene" uid="uid://ccqoreueuxdb7" path="res://hud.tscn" id="4_0qnje"]
 [ext_resource type="AudioStream" uid="uid://q2pf4fr8d0ks" path="res://art/House In a Forest Loop.ogg" id="5_55d8h"]
@@ -13,9 +11,7 @@ _data = {
 }
 point_count = 5
 
-[node name="Main" type="Node"]
-script = ExtResource("1_0r6n5")
-mob_scene = ExtResource("2_50pww")
+[node name="Main" type="Main"]
 
 [node name="ColorRect" type="ColorRect" parent="."]
 anchors_preset = 15
@@ -53,7 +49,7 @@ stream = ExtResource("5_55d8h")
 stream = ExtResource("6_hp1r0")
 
 [connection signal="hit" from="Player" to="." method="game_over"]
-[connection signal="timeout" from="MobTimer" to="." method="_on_MobTimer_timeout"]
-[connection signal="timeout" from="ScoreTimer" to="." method="_on_ScoreTimer_timeout"]
-[connection signal="timeout" from="StartTimer" to="." method="_on_StartTimer_timeout"]
+[connection signal="timeout" from="MobTimer" to="." method="on_mob_timer_timeout"]
+[connection signal="timeout" from="ScoreTimer" to="." method="on_score_timer_timeout"]
+[connection signal="timeout" from="StartTimer" to="." method="on_start_timer_timeout"]
 [connection signal="start_game" from="HUD" to="." method="new_game"]

@@ -1,0 +1,87 @@
+module main
+
+import math
+import gd
+
+struct Main {
+	gd.Node
+mut:
+	// TODO: need to implement exporting PackedScenes
+	mob_scene gd.PackedScene @[gd.export]
+	score     i64
+
+	death_sound    gd.AudioStreamPlayer @[gd.onready: 'DeathSound']
+	hud            gd.CanvasLayer       @[gd.onready: 'HUD']
+	mob_timer      gd.Timer             @[gd.onready: 'MobTimer']
+	music          gd.AudioStreamPlayer @[gd.onready: 'Music']
+	player         gd.Area2D            @[gd.onready: 'Player']
+	score_timer    gd.Timer             @[gd.onready: 'ScoreTimer']
+	start_position gd.Marker2D          @[gd.onready: 'StartPosition']
+	start_timer    gd.Timer             @[gd.onready: 'StartTimer']
+}
+
+fn (mut s Main) ready_() {
+	if packed_scene := gd.ResourceLoader.singleton().load('res://mob.tscn').try_cast_to[gd.PackedScene]() {
+		s.mob_scene = packed_scene
+	}
+}
+
+@[gd.expose]
+fn (s &Main) game_over() {
+	s.score_timer.stop()
+	s.mob_timer.stop()
+	s.hud.call('show_game_over')
+	s.music.stop()
+	s.death_sound.play()
+}
+
+@[gd.expose]
+fn (mut s Main) new_game() {
+	// FIX: this crashes
+	// s.get_tree().call_group('mobs', 'queue_free')
+	s.score = 0
+	s.player.call('start', s.start_position.get_position().to_variant())
+	s.start_timer.start()
+	s.hud.call('update_score', gd.Variant.from_i64(s.score))
+	s.hud.call('show_message', gd.String.new('Get Ready').to_variant())
+	s.music.play()
+}
+
+@[gd.expose]
+fn (mut s Main) on_mob_timer_timeout() {
+	// Create a new instance of the Mob scene.
+	mut mob := s.mob_scene.instantiate_as[gd.RigidBody2D]()
+
+	// Choose a random location on Path2D.
+	mut mob_spawn_location := s.get_node_as[gd.PathFollow2D]('MobPath/MobSpawnLocation')
+	mob_spawn_location.set_progress(gd.randi())
+
+	// Set the mob's position to a random location.
+	mob.set_position(mob_spawn_location.get_position())
+
+	// Set the mob's direction perpendicular to the path direction.
+	mut direction := mob_spawn_location.get_rotation() + math.pi / 2
+
+	// Add some randomness to the direction.
+	direction += gd.randf_range(-math.pi / 4, math.pi / 4)
+	mob.set_rotation(direction)
+
+	// Choose the velocity for the mob.
+	velocity := gd.Vector2{f32(gd.randf_range(150.0, 250.0)), 0.0}
+	mob.set_linear_velocity(velocity.rotated(direction))
+
+	// Spawn the mob by adding it to the Main scene.
+	s.add_child(mob.cast_to[gd.Node]())
+}
+
+@[gd.expose]
+fn (mut s Main) on_score_timer_timeout() {
+	s.score += 1
+	s.hud.call('update_score', gd.Variant.from_i64(s.score))
+}
+
+@[gd.expose]
+fn (mut s Main) on_start_timer_timeout() {
+	s.mob_timer.start()
+	s.score_timer.start()
+}
