@@ -9,7 +9,7 @@ mut:
 	ctx struct {
 	mut:
 		start time.Time
-		project string
+		path string
 		compiler string
 		out string
 		debug bool
@@ -25,14 +25,14 @@ fn (mut app App) exec(cmd string) ! {
 
 fn (mut app App) setup(cmd cli.Command) ! {
 	app.ctx.start = time.now()
-	app.ctx.project = cmd.args[0]
+	app.ctx.path = if cmd.args.len > 0 { cmd.args[0] } else { '.' }
 	app.ctx.compiler = cmd.flags.get_string('compiler')!
-	app.ctx.out = join_path(app.ctx.project, cmd.flags.get_string('out')!)
+	app.ctx.out = join_path(app.ctx.path, cmd.flags.get_string('out')!)
 	app.ctx.debug = cmd.flags.get_bool('debug')!
 }
 
 fn (mut app App) run() ! {
-	println('Building project: ${app.ctx.project}')
+	println('Building project: ${app.ctx.path}')
 
 	mut options := [
 		'-shared',
@@ -49,7 +49,7 @@ fn (mut app App) run() ! {
 		options << '-g'
 	}
 
-	app.exec('${@VEXE} ${options.join(' ')} ${app.ctx.project}')!
+	app.exec('${@VEXE} ${options.join(' ')} ${app.ctx.path}')!
 
 	// remove exec bit if using tcc
 	if app.ctx.compiler == 'tcc' {
@@ -68,8 +68,7 @@ fn main() {
 			app.setup(cmd)!
 			app.run()!
 		}
-		required_args: 1
-		args:          ['project']
+		args:          ['path']
 		flags:         [
 			cli.Flag{
 				flag:        .bool
