@@ -39,6 +39,8 @@ fn (s &Main) game_over() {
 fn (mut s Main) new_game() {
 	// FIX: this crashes
 	// s.get_tree().call_group('mobs', 'queue_free')
+	s.get_tree().call_group_v('mobs', 'queue_free')
+
 	s.score = 0
 	s.player.call('start', s.start_position.get_position().to_variant())
 	s.start_timer.start()
