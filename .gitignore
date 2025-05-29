@@ -3,3 +3,6 @@
 
 # lib
 *.so
+
+# bin
+bin/build

@@ -1,50 +1,73 @@
 #!/usr/bin/env -S v
 
 import cli
-import os
 import time
 
-fn run(cmd string) {
+@[heap]
+struct App {
+mut:
+	ctx struct {
+	mut:
+		start time.Time
+		project string
+		compiler string
+		out string
+		debug bool
+	}
+}
+
+fn (mut app App) exec(cmd string) ! {
+	if app.ctx.debug {
+		println('Running command: ${cmd}')
+	}
 	execute(cmd)
 }
 
-fn build(cmd cli.Command) ! {
-	start := time.now()
-	project := cmd.args[0]
-	compiler := cmd.flags.get_string('compiler')!
-	out := cmd.flags.get_string('out')!
+fn (mut app App) setup(cmd cli.Command) ! {
+	app.ctx.start = time.now()
+	app.ctx.project = cmd.args[0]
+	app.ctx.compiler = cmd.flags.get_string('compiler')!
+	app.ctx.out = join_path(app.ctx.project, cmd.flags.get_string('out')!)
+	app.ctx.debug = cmd.flags.get_bool('debug')!
+}
 
-	println('Building project... ${project}')
+fn (mut app App) run() ! {
+	println('Building project: ${app.ctx.project}')
 
 	mut options := [
 		'-shared',
 		'-enable-globals',
-		// '-d no_backtrace',
-		'-o ${out}',
+		'-o ${app.ctx.out}',
 	]
 
-	if compiler != 'tcc' {
-		options << '-cc ${compiler}'
+	if app.ctx.compiler == 'tcc' {
+		options << '-d no_backtrace'
+	} else {
+		options << '-cc ${app.ctx.compiler}'
 	}
-	if cmd.flags.get_bool('debug')! {
+	if app.ctx.debug {
 		options << '-g'
 	}
 
-	run('${@VEXE} ${options.join(' ')} ${project}')
+	app.exec('${@VEXE} ${options.join(' ')} ${app.ctx.project}')!
 
 	// remove exec bit if using tcc
-	if compiler == 'tcc' {
-		run('patchelf --clear-execstack ${out}')
+	if app.ctx.compiler == 'tcc' {
+		app.exec('patchelf --clear-execstack ${app.ctx.out}')!
 	}
 
-	end := time.now()
-	println('Finished in ${end - start}')
+	println('Finished in ${time.now() - app.ctx.start}')
 }
 
 fn main() {
-	mut app := cli.Command{
+	mut cmd := cli.Command{
 		name:          'build'
 		description:   'gdext-v built script'
+		execute: fn (cmd cli.Command) ! {
+			mut app := App{}
+			app.setup(cmd)!
+			app.run()!
+		}
 		required_args: 1
 		args:          ['project']
 		flags:         [
@@ -69,9 +92,8 @@ fn main() {
 				default_value: ['lib/libvlang.so']
 			},
 		]
-		execute:       build
 	}
 
-	app.setup()
-	app.parse(os.args_after('--'))
+	cmd.setup()
+	cmd.parse(args_after('--'))
 }
