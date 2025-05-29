@@ -3,7 +3,6 @@
 import cli
 import time
 
-@[heap]
 struct App {
 mut:
 	ctx struct {
@@ -20,7 +19,7 @@ fn (mut app App) exec(cmd string) ! {
 	if app.ctx.debug {
 		println('Running command: ${cmd}')
 	}
-	execute(cmd)
+	execute_or_exit(cmd)
 }
 
 fn (mut app App) setup(cmd cli.Command) ! {
