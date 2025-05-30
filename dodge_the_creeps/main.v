@@ -1,5 +1,3 @@
-module main
-
 import math
 import gd
 
@@ -37,7 +35,7 @@ fn (s &Main) game_over() {
 
 @[gd.expose]
 fn (mut s Main) new_game() {
-	// FIX: this crashes
+	// FIX: crash
 	// s.get_tree().call_group('mobs', 'queue_free')
 	s.get_tree().call_group_v('mobs', 'queue_free')
 
