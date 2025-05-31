@@ -8,7 +8,8 @@ mut:
 	mob_scene gd.PackedScene @[gd.export]
 	score     i64
 
-	death_sound    gd.AudioStreamPlayer @[gd.onready: 'DeathSound']
+	death_sound gd.AudioStreamPlayer @[gd.onready: 'DeathSound']
+	// TODO: support using gdext-v types
 	hud            gd.CanvasLayer       @[gd.onready: 'HUD']
 	mob_timer      gd.Timer             @[gd.onready: 'MobTimer']
 	music          gd.AudioStreamPlayer @[gd.onready: 'Music']
@@ -28,9 +29,14 @@ fn (mut s Main) ready_() {
 fn (s &Main) game_over() {
 	s.score_timer.stop()
 	s.mob_timer.stop()
-	s.hud.call('show_game_over')
+	// TODO
+	// s.hud.call('show_game_over')
 	s.music.stop()
 	s.death_sound.play()
+
+	if mut hud := s.hud.try_cast_to_v[HUD]() {
+		hud.show_game_over()
+	}
 }
 
 @[gd.expose]
@@ -42,8 +48,13 @@ fn (mut s Main) new_game() {
 	s.score = 0
 	s.player.call('start', s.start_position.get_position().to_variant())
 	s.start_timer.start()
-	s.hud.call('update_score', gd.Variant.from_i64(s.score))
-	s.hud.call('show_message', gd.String.new('Get Ready').to_variant())
+	// TODO
+	// s.hud.call('update_score', gd.Variant.from_i64(s.score))
+	// s.hud.call('show_message', gd.String.new('Get Ready').to_variant())
+	if mut hud := s.hud.try_cast_to_v[HUD]() {
+		hud.update_score(s.score)
+		hud.show_message('Get Ready')
+	}
 	s.music.play()
 }
 
@@ -77,7 +88,11 @@ fn (mut s Main) on_mob_timer_timeout() {
 @[gd.expose]
 fn (mut s Main) on_score_timer_timeout() {
 	s.score += 1
-	s.hud.call('update_score', gd.Variant.from_i64(s.score))
+	// TODO
+	// s.hud.call('update_score', gd.Variant.from_i64(s.score))
+	if mut hud := s.hud.try_cast_to_v[HUD]() {
+		hud.update_score(s.score)
+	}
 }
 
 @[gd.expose]
