@@ -19,6 +19,6 @@ fn (s &Mob) ready_() {
 }
 
 @[gd.expose]
-fn (mut s Mob) on_visibility_notifier_2d_screen_exited_() {
+fn (mut s Mob) on_visibility_notifier_2d_screen_exited() {
 	s.queue_free()
 }

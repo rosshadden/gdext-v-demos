@@ -4,19 +4,19 @@ import gd
 struct Main {
 	gd.Node
 	gd.Class // HACK: needed for now until I come up with something better
-mut:
-	// TODO: need to implement exporting PackedScenes
-	mob_scene gd.PackedScene @[gd.export]
-	score     i64
 
 	death_sound    gd.AudioStreamPlayer @[gd.onready: 'DeathSound']
-	hud            HUD // @[gd.onready: 'HUD']
 	mob_timer      gd.Timer             @[gd.onready: 'MobTimer']
 	music          gd.AudioStreamPlayer @[gd.onready: 'Music']
 	player         gd.Area2D            @[gd.onready: 'Player']
 	score_timer    gd.Timer             @[gd.onready: 'ScoreTimer']
 	start_position gd.Marker2D          @[gd.onready: 'StartPosition']
 	start_timer    gd.Timer             @[gd.onready: 'StartTimer']
+mut:
+	mob_scene gd.PackedScene @[gd.export] // TODO: need to implement exporting PackedScenes
+
+	hud            HUD // @[gd.onready: 'HUD']
+	score     i64
 }
 
 fn (mut s Main) ready_() {

@@ -3,7 +3,7 @@ import gd
 struct HUD {
 	gd.CanvasLayer
 	gd.Class // HACK: needed for now until I come up with something better
-mut:
+
 	start_game gd.Signal @[gd.signal]
 
 	message_label gd.Label  @[gd.onready: 'MessageLabel']
@@ -12,6 +12,7 @@ mut:
 	start_button  gd.Button @[gd.onready: 'StartButton']
 }
 
+// TODO: these don't need to be exposed
 @[gd.expose]
 fn (mut s HUD) show_message(text string) {
 	s.message_label.set_text(text)
