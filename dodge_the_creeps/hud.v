@@ -2,6 +2,7 @@ import gd
 
 struct HUD {
 	gd.CanvasLayer
+	gd.Class // HACK: needed for now until I come up with something better
 mut:
 	start_game gd.Signal @[gd.signal]
 
