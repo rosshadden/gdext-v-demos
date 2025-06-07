@@ -4,19 +4,19 @@ import gd
 struct Main {
 	gd.Node
 	gd.Class // HACK: needed for now until I come up with something better
-
 	death_sound    gd.AudioStreamPlayer @[gd.onready: 'DeathSound']
 	mob_timer      gd.Timer             @[gd.onready: 'MobTimer']
 	music          gd.AudioStreamPlayer @[gd.onready: 'Music']
-	player         gd.Area2D            @[gd.onready: 'Player']
 	score_timer    gd.Timer             @[gd.onready: 'ScoreTimer']
 	start_position gd.Marker2D          @[gd.onready: 'StartPosition']
 	start_timer    gd.Timer             @[gd.onready: 'StartTimer']
 mut:
 	mob_scene gd.PackedScene @[gd.export] // TODO: need to implement exporting PackedScenes
 
-	hud            HUD // @[gd.onready: 'HUD']
-	score     i64
+	hud    HUD    // @[gd.onready: 'HUD']
+	player Player // @[gd.onready: 'Player']
+
+	score i64
 }
 
 fn (mut s Main) ready_() {
@@ -26,10 +26,8 @@ fn (mut s Main) ready_() {
 	}
 
 	// TEMP: workaround onready not working great with nested onready nodes
-	node := s.get_node_v('HUD')
-	if mut hud := node.try_cast_to_v[HUD]() {
-		s.hud = hud
-	}
+	s.hud = s.get_node_v('HUD').cast_to_v[HUD]()
+	s.player = s.get_node_v('Player').cast_to_v[Player]()
 }
 
 @[gd.expose]
@@ -48,7 +46,7 @@ fn (mut s Main) new_game() {
 	s.get_tree().call_group_v('mobs', 'queue_free')
 
 	s.score = 0
-	s.player.call('start', s.start_position.get_position().to_variant())
+	s.player.start(s.start_position.get_position())
 	s.start_timer.start()
 	s.hud.update_score(s.score)
 	s.hud.show_message('Get Ready')

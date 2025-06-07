@@ -3,9 +3,10 @@ import log
 
 pub fn init_gd(v voidptr, l gd.GDExtensionInitializationLevel) {
 	if l == .initialization_level_scene {
-		gd.register_class[Main]('Node')
 		gd.register_class[HUD]('CanvasLayer')
+		gd.register_class[Main]('Node')
 		gd.register_class[Mob]('RigidBody2D')
+		gd.register_class[Player]('Area2D')
 	}
 }
 

@@ -3,7 +3,6 @@ import gd
 struct HUD {
 	gd.CanvasLayer
 	gd.Class // HACK: needed for now until I come up with something better
-
 	start_game gd.Signal @[gd.signal]
 
 	message_label gd.Label  @[gd.onready: 'MessageLabel']
