@@ -73,9 +73,7 @@ fn (mut s Player) start(pos gd.Vector2) {
 fn (mut s Player) on_body_entered(body gd.Node2D) {
 	// Player disappears after being hit.
 	s.hide()
-	// FIX: crash
-	// s.hit.emit()
-	s.emit_signal('hit')
+	s.hit.emit()
 	// Must be deferred as we can't change physics properties on a physics callback.
 	s.get_node_as[gd.CollisionShape2D]('CollisionShape2D').set_deferred('disabled', gd.Variant.from_bool(true))
 }

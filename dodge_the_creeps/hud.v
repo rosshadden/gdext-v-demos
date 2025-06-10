@@ -36,9 +36,7 @@ fn (mut s HUD) update_score(score i64) {
 @[gd.expose]
 fn (mut s HUD) on_start_button_pressed() {
 	s.start_button.hide()
-	// FIX: crash
-	// s.start_game.emit()
-	s.emit_signal('start_game')
+	s.start_game.emit()
 }
 
 @[gd.expose]
