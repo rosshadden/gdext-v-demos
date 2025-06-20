@@ -1,5 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://cyfwty2q3rdse"]
+[gd_scene load_steps=7 format=3 uid="uid://cyfwty2q3rdse"]
 
+[ext_resource type="PackedScene" uid="uid://rkdnhqgf2hpj" path="res://mob.tscn" id="1_lquwl"]
 [ext_resource type="PackedScene" uid="uid://4vwrqjegqwpj" path="res://player.tscn" id="3_veqnc"]
 [ext_resource type="PackedScene" uid="uid://ccqoreueuxdb7" path="res://hud.tscn" id="4_0qnje"]
 [ext_resource type="AudioStream" uid="uid://q2pf4fr8d0ks" path="res://art/House In a Forest Loop.ogg" id="5_55d8h"]
@@ -12,6 +13,7 @@ _data = {
 point_count = 5
 
 [node name="Main" type="Main"]
+mob_scene = ExtResource("1_lquwl")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 anchors_preset = 15

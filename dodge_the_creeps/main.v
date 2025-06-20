@@ -10,9 +10,9 @@ struct Main {
 	score_timer    gd.Timer             @[gd.onready: 'ScoreTimer']
 	start_position gd.Marker2D          @[gd.onready: 'StartPosition']
 	start_timer    gd.Timer             @[gd.onready: 'StartTimer']
-mut:
-	mob_scene gd.PackedScene @[gd.export] // TODO: need to implement exporting PackedScenes
 
+	mob_scene gd.Ref[gd.PackedScene] @[gd.export]
+mut:
 	hud    HUD    // @[gd.onready: 'HUD']
 	player Player // @[gd.onready: 'Player']
 
@@ -20,11 +20,6 @@ mut:
 }
 
 fn (mut s Main) ready_() {
-	// TEMP: wokaround for PackedScene export
-	if packed_scene := gd.ResourceLoader.singleton().load('res://mob.tscn').try_cast_to[gd.PackedScene]() {
-		s.mob_scene = packed_scene
-	}
-
 	// TEMP: workaround onready not working great with nested onready nodes
 	s.hud = s.get_node_v('HUD').cast_to_v[HUD]()
 	s.player = s.get_node_v('Player').cast_to_v[Player]()
@@ -56,7 +51,7 @@ fn (mut s Main) new_game() {
 @[gd.expose]
 fn (mut s Main) on_mob_timer_timeout() {
 	// Create a new instance of the Mob scene.
-	mut mob := s.mob_scene.instantiate_as[gd.RigidBody2D]()
+	mut mob := s.mob_scene.get().instantiate_as[gd.RigidBody2D]()
 
 	// Choose a random location on Path2D.
 	mut mob_spawn_location := s.get_node_as[gd.PathFollow2D]('MobPath/MobSpawnLocation')
