@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://gjcda154aylo"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sss7e"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_g2bv4"]
+sky_material = SubResource("ProceduralSkyMaterial_sss7e")
+
+[sub_resource type="Environment" id="Environment_mwwbw"]
+background_mode = 2
+sky = SubResource("Sky_g2bv4")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xeoiy"]
+albedo_color = Color(0, 0, 0, 1)
+emission_enabled = true
+emission = Color(0.745673, 0.00175023, 0.904929, 1)
+
+[node name="lab" type="Lab"]
+
+[node name="env" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_mwwbw")
+
+[node name="sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="model" type="CSGTorus3D" parent="."]
+inner_radius = 2.042
+sides = 32
+material = SubResource("StandardMaterial3D_xeoiy")
+
+[node name="camera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
+current = true
