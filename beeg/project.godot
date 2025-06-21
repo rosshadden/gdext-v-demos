@@ -17,7 +17,7 @@ config/icon="res://assets/icons/icon.svg"
 
 [autoload]
 
-Mappings="*res://src/systems/mappings.gd"
+debug="*res://src/services/debug.tscn"
 
 [debug]
 

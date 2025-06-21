@@ -1,9 +1,11 @@
 import gd
 import scenes
+import services
 
 pub fn init_gd(v voidptr, l gd.GDExtensionInitializationLevel) {
 	if l == .initialization_level_scene {
 		gd.register_class[scenes.Lab]('Node3D')
+		gd.register_class[services.Debug]('Node')
 	}
 }
 
