@@ -5,7 +5,7 @@ import gd
 pub struct Lab {
 	gd.Node3D
 	gd.Class // HACK: needed for now until I come up with something better
-	model gd.CSGShape3D          @[gd.onready]
+	model gd.CSGShape3D @[gd.onready]
 }
 
 fn (mut s Lab) process_(delta f64) {
