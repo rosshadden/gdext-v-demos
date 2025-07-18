@@ -24,8 +24,10 @@ fn (mut s HUD) show_game_over() {
 	s.show_message('Game Over')
 	// TODO: implement nicer awaiting
 	// await s.message_timer.timeout
-	cb := gd.Callable.new(s, 'once_message_timer_timeout')
-	s.message_timer.timeout().connect(cb)
+	s.message_timer.timeout().connect('once_message_timer_timeout',
+		node:  s
+		flags: .connect_one_shot
+	)
 }
 
 @[gd.expose]
@@ -50,8 +52,10 @@ fn (mut s HUD) once_message_timer_timeout() {
 	s.message_label.show()
 	// TODO: implement nicer awaiting
 	// await s.get_tree().create_timer(1).timeout
-	cb := gd.Callable.new(s, 'once_create_timer_timeout')
-	s.get_tree().create_timer(1).timeout().connect(cb)
+	s.get_tree().create_timer(1).timeout().connect('once_create_timer_timeout',
+		node:  s
+		flags: .connect_one_shot
+	)
 }
 
 @[gd.expose]
